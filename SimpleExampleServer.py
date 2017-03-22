@@ -37,10 +37,13 @@ class SimpleChat(WebSocket):
         if self.data is None:
             self.data = ''
 
+        ret = '0'
+        if self.data == 'getTime':
+            ret = '1'
         for client in self.server.connections.itervalues():
             if client != self:
                 try:
-                    client.sendMessage(str(self.address[0]) + ' - ' + str(self.data))
+                    client.sendMessage(ret)
                 except Exception as n:
                     print n
 
