@@ -9,6 +9,7 @@ import ssl
 import logging
 from SimpleWebSocketServer import WebSocket, SimpleWebSocketServer, SimpleSSLWebSocketServer
 from optparse import OptionParser
+from time import gmtime, strftime
 
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 
@@ -37,9 +38,9 @@ class SimpleChat(WebSocket):
         if self.data is None:
             self.data = ''
 
-        ret = '0'
-        if self.data == 'getTime':
-            ret = '1'
+        ret = strftime("%a, %d %b %Y %H:%M:%S", gmtime())
+        if self.data != 'getTime':
+            ret += ": " + str(self.data)
         for client in self.server.connections.itervalues():
             if client != self:
                 try:
@@ -70,7 +71,7 @@ if __name__ == "__main__":
 
     parser = OptionParser(usage="usage: %prog [options]", version="%prog 1.0")
     parser.add_option("--host", default='', type='string', action="store", dest="host", help="hostname (localhost)")
-    parser.add_option("--port", default=8000, type='int', action="store", dest="port", help="port (8000)")
+    parser.add_option("--port", default=8080, type='int', action="store", dest="port", help="port (8080)")
     parser.add_option("--example", default='echo', type='string', action="store", dest="example", help="echo, chat")
     parser.add_option("--ssl", default=0, type='int', action="store", dest="ssl", help="ssl (1: on, 0: off (default))")
     parser.add_option("--cert", default='./cert.pem', type='string', action="store", dest="cert", help="cert (./cert.pem)")
